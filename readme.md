@@ -48,7 +48,7 @@ Spark AI is an innovative application designed to enhance conversations with AI-
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/spark-ai.git
+   git clone https://github.com/daniel-devi/Spark-AI.git
    cd spark-ai
    ```
 
@@ -67,7 +67,7 @@ Spark AI is an innovative application designed to enhance conversations with AI-
    ```
 
 4. **Open in Browser**
-   Visit `http://localhost:3000` to view the application.
+   Visit `http://localhost:5173` to view the application.
 
 ---
 
