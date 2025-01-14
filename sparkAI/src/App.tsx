@@ -104,7 +104,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const featureInterval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % features.length);
-    }, 3000);
+    }, 6500);
     return () => clearInterval(featureInterval);
   }, []);
 
