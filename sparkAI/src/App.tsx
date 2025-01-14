@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, 
-  Send, 
   MessageSquare, 
   Coffee,
   Play,
@@ -14,10 +13,6 @@ import {
   MessageCircle
 } from 'lucide-react';
 
-interface Message {
-  text: string;
-  isAI: boolean;
-}
 
 interface Feature {
   title: string;
