@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Sparkles, 
-  MessageSquare, 
   Coffee,
   Play,
   Calendar,
@@ -11,7 +10,6 @@ import {
   Lock,
   Zap,
   MessageCircle,
-  Info,
   AlertCircle
 } from 'lucide-react';
 
