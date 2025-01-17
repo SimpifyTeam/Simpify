@@ -1,6 +1,6 @@
-# Spark AI - Development Readme
+# Simplify - Development Readme
 
-Spark AI is an innovative application designed to enhance conversations with AI-powered features like clever pickup lines, interactive chat games, and much more. This document will guide developers through the setup and development process for Spark AI.
+Simplify is an innovative application designed to enhance conversations with AI-powered features like clever pickup lines, interactive chat games, and much more. This document will guide developers through the setup and development process for Simplify.
 
 ---
 
@@ -149,6 +149,12 @@ We welcome contributions! Follow these steps:
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Web App
+
+Visit the production-ready version of Simplify at: [https://spark-ai-chi.vercel.app/](https://spark-ai-chi.vercel.app/)
 
 ---
 
