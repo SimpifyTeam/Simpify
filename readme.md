@@ -121,7 +121,7 @@ spark-ai/
 ## Available Scripts
 
 ### `npm start`
-Runs the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the app in development mode. Open [http://localhost:5137](http://localhost:5173) to view it in the browser.
 
 ### `npm run build`
 Builds the app for production to the `build` folder.
@@ -154,7 +154,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Web App
 
-Visit the production-ready version of Simplify at: [https://spark-ai-chi.vercel.app/](https://spark-ai-chi.vercel.app/)
+Visit the production-ready version of Simplify at: [WEBSITE](https://simpify-mfjh.vercel.app/)
 
 ---
 
