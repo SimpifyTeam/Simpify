@@ -12,6 +12,7 @@ import {
   MessageCircle,
   AlertCircle
 } from 'lucide-react';
+import axios from 'axios';
 
 // Types and Interfaces
 interface Message {
@@ -111,19 +112,26 @@ const App: React.FC = () => {
   // Form submission handler
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormState(prev => ({ ...prev, loading: true }));
+    setFormState((prev) => ({ ...prev, loading: true }));
     setError(null);
-    
+  
     try {
-      // Simulated API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setFormState(prev => ({ ...prev, submitted: true }));
+      // Replace simulated API call with an actual Axios request
+      const response = await axios.post('/api/request-access', {
+        email: formState.email, // Pass the email from your form state
+      });
+  
+      // Handle the successful response
+      console.log(response.data); // Optional: Debugging the response
+      setFormState((prev) => ({ ...prev, submitted: true }));
     } catch (err) {
+      console.error(err); // Optional: Debugging the error
       setError('Failed to submit. Please try again.');
     } finally {
-      setFormState(prev => ({ ...prev, loading: false }));
+      setFormState((prev) => ({ ...prev, loading: false }));
     }
-  }, []);
+  }, [formState.email]);
+  
 
   // Example rotation effect
   useEffect(() => {
