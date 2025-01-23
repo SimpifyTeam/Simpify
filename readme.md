@@ -48,8 +48,8 @@ Simplify is an innovative application designed to enhance conversations with AI-
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/daniel-devi/Spark-AI.git
-   cd spark-ai
+   git clone https://github.com/daniel-devi/Simpify.git
+   cd Simpify
    ```
 
 2. **Install Dependencies**
