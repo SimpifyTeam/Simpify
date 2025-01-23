@@ -154,7 +154,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Web App
 
-Visit the production-ready version of Simplify at: [WEBSITE](https://simpify-mfjh.vercel.app/)
+Visit the production-ready version of Simplify at: [WEBSITE](https://simpify-six.vercel.app/)
 
 ---
 
