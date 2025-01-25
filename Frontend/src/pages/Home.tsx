@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 import { 
-  Sparkles, 
   Rocket,
   Mail,
   Check,
