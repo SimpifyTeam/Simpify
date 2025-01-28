@@ -80,7 +80,7 @@ const Home = () => {
         <div className="text-center mb-16 animate-fade-in">
           <h1 className="text-6xl font-bold text-gray-900 mb-6">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
-              Spark AI
+              Simpify
             </span>
           </h1>
           <p className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 mb-6">
