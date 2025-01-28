@@ -6,7 +6,8 @@ import {
   Check,
   MessageCircle,
   Heart,
-  Zap
+  Zap,
+  Sparkles
 } from 'lucide-react';
 
 interface Message {
@@ -20,40 +21,30 @@ interface ChatScenario {
   messages: Message[];
 }
 
-const Home: React.FC = () => {
+const Home = () => {
   const [state, handleSubmit] = useForm("xzzddpbo");
   const [isHovered, setIsHovered] = useState(false);
   const [activeScenarioIndex, setActiveScenarioIndex] = useState(0);
 
   const chatScenarios: ChatScenario[] = [
     {
-      title: "First Date Magic",
-      description: "Crush those first date nerves",
+      title: "Keep the Conversation Flowing",
+      description: "Never run out of things to say",
       messages: [
-        { text: "So, what do you like to do for fun?", isAI: false },
-        { text: "I'm all about urban photography – catching those random city moments that tell a story.", isAI: true },
-        { text: "That's cool! Got a favorite shot?", isAI: false },
-        { text: "There's this sunrise pic from the farmers market. Wanna see?", isAI: true }
+        { text: "How do I keep this chat going? They seem interesting!", isAI: false },
+        { text: "Try asking about their recent festival photo - 'That looks like such a vibe! What was your favorite performance?'", isAI: true },
+        { text: "Perfect! They're typing...", isAI: false },
+        { text: "Great! Now let's keep that energy going", isAI: true }
       ]
     },
     {
-      title: "Pro Networking",
-      description: "Make connections that count",
+      title: "Smooth Recovery",
+      description: "Turn awkward moments into connections",
       messages: [
-        { text: "I want to grow my tech network.", isAI: false },
-        { text: "Let's make you stand out. How about: 'Creative problem-solver turning challenges into opportunities'?", isAI: true },
-        { text: "Will that sound too intense?", isAI: false },
-        { text: "Nah, it's confident without being cocky. Trust me.", isAI: true }
-      ]
-    },
-    {
-      title: "Dating App Win",
-      description: "Spark conversations that click",
-      messages: [
-        { text: "You're a hiker? Any crazy trail stories?", isAI: false },
-        { text: "Got chased by a mountain goat once. Turned a scary moment into a hilarious story!", isAI: true },
-        { text: "That's epic! Most people would've freaked.", isAI: false },
-        { text: "Want to hear how I escaped?", isAI: true }
+        { text: "Help! My joke totally flopped 😅", isAI: false },
+        { text: "No worries! Try: 'Okay clearly I need to work on my comedy game. What's the best joke you've heard lately?'", isAI: true },
+        { text: "That's actually perfect!", isAI: false },
+        { text: "You've got this! Keep it light and genuine", isAI: true }
       ]
     }
   ];
@@ -61,42 +52,49 @@ const Home: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveScenarioIndex((prev) => (prev + 1) % chatScenarios.length);
-    }, 8000);
+    }, 9500);
     return () => clearInterval(interval);
   }, []);
 
   const features = [
     {
-      title: "Never Awkward",
-      description: "Turn small talk into big connections",
+      title: "Natural Flow",
+      description: "Keep conversations engaging without overthinking",
       icon: <Zap className="w-6 h-6" />
     },
     {
-      title: "Your Vibe, Your Style",
-      description: "Real advice that sounds like you",
+      title: "Your Voice, Enhanced",
+      description: "Suggestions that feel authentically you",
       icon: <Heart className="w-6 h-6" />
     },
     {
-      title: "Confidence On Demand",
-      description: "Smooth replies at your fingertips",
+      title: "Always Ready",
+      description: "The perfect response when you need it most",
       icon: <MessageCircle className="w-6 h-6" />
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col overflow-x-hidden">
-      <main className="flex-grow container mx-auto px-4 py-16 max-w-6xl flex flex-col justify-center">
-        <div className="text-center mb-12 animate-fade-in-up">
-          <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 mb-4 animate-pulse-slow">
-            Simpify
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      <main className="container mx-auto px-4 py-16 max-w-6xl">
+        <div className="text-center mb-16 animate-fade-in">
+          <h1 className="text-6xl font-bold text-gray-900 mb-6">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+              Spark AI
+            </span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 mb-6">
             Talk smarter. Connect better.
           </p>
+          <div className="flex items-center justify-center gap-2 text-xl text-gray-600">
+            <Sparkles className="w-5 h-5 text-purple-500" />
+            <span>Your AI Conversation Coach</span>
+            <Sparkles className="w-5 h-5 text-blue-500" />
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white shadow-2xl rounded-2xl p-8 border border-gray-100 animate-slide-in-left">
+        <div className="grid lg:grid-cols-2 gap-8 mb-16">
+          <div className="bg-white shadow-xl rounded-2xl p-8 border border-gray-100 animate-slide-in-left">
             {!state.succeeded ? (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="relative group">
@@ -124,7 +122,7 @@ const Home: React.FC = () => {
                 <textarea
                   id="message"
                   name="message"
-                  placeholder="Why are you excited about Simpify? (Optional)"
+                  placeholder="Why are you excited about Spark AI? (Optional)"
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-300"
                   rows={3}
                 />
@@ -159,13 +157,17 @@ const Home: React.FC = () => {
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">You're on the List!</h2>
                 <p className="text-gray-600">
-                  We'll send you an exclusive invite when Simpify launches.
+                  We'll send you an exclusive invite when Spark AI launches.
+                </p>
+                <p className="text-gray-600">
+                  While you wait, why not <a href="https://discord.gg/aBfj2ByU" 
+                  className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
                 </p>
               </div>
             )}
           </div>
 
-          <div className="bg-white shadow-2xl rounded-2xl p-8 border border-gray-100 animate-slide-in-right">
+          <div className="bg-white shadow-xl rounded-2xl p-8 border border-gray-100 animate-slide-in-right">
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-gray-800 mb-2">
                 {chatScenarios[activeScenarioIndex].title}
@@ -178,13 +180,14 @@ const Home: React.FC = () => {
               {chatScenarios[activeScenarioIndex].messages.map((message, index) => (
                 <div 
                   key={index} 
-                  className={`flex ${message.isAI ? 'justify-start' : 'justify-end'}`}
+                  className={`flex ${message.isAI ? 'justify-start' : 'justify-end'} animate-fade-in-up`}
+                  style={{ animationDelay: `${index * 200}ms` }}
                 >
                   <div 
                     className={`max-w-[80%] p-3 rounded-lg ${
                       message.isAI 
                         ? 'bg-gray-100 text-gray-900' 
-                        : 'bg-purple-500 text-white'
+                        : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                     }`}
                   >
                     {message.text}
@@ -195,11 +198,12 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 animate-fade-in-up">
-          {features.map((feature) => (
+        <div className="grid md:grid-cols-3 gap-6 mb-16">
+          {features.map((feature, index) => (
             <div 
               key={feature.title} 
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2"
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 animate-fade-in-up"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="text-purple-600 bg-purple-100 rounded-full p-2">
@@ -211,11 +215,21 @@ const Home: React.FC = () => {
             </div>
           ))}
         </div>
+
+        <div className="text-center bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl p-12">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Ready to Transform Your Conversations?</h2>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-8 py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+          >
+            Join the Waitlist
+          </button>
+        </div>
       </main>
 
       <footer className="bg-gray-900 text-white py-6">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; {new Date().getFullYear()} Simpify. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Spark AI. All rights reserved.</p>
         </div>
       </footer>
     </div>
