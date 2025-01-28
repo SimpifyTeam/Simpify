@@ -122,7 +122,7 @@ const Home = () => {
                 <textarea
                   id="message"
                   name="message"
-                  placeholder="Why are you excited about Spark AI? (Optional)"
+                  placeholder="Why are you excited about Simpify? (Optional)"
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-300"
                   rows={3}
                 />
