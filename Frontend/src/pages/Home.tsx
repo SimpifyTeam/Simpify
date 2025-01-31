@@ -8,7 +8,6 @@ import {
   Heart,
   Zap,
   Sparkles,
-  Share2,
   Copy
 } from 'lucide-react';
 
