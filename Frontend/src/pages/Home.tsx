@@ -30,10 +30,10 @@ interface ReferralInfo {
 const Home = () => {
   const [state, handleSubmit] = useForm("xzzddpbo");
   const [isHovered, setIsHovered] = useState(false);
-  const [activeScenarioIndex, setActiveScenarioIndex] = useState(0);
   const [referralInfo, setReferralInfo] = useState<ReferralInfo | null>(null);
   const [showCopied, setShowCopied] = useState(false);
-
+  const activeScenarioIndex = 0
+  
   const features = [
     {
       title: "Natural Flow",
@@ -264,23 +264,7 @@ const Home = () => {
                 </button>
               </form>
             ) : (
-              <div className="text-center space-y-4">
-                <div className="flex justify-center mb-4">
-                  <Check className="w-16 h-16 text-green-500 bg-green-100 rounded-full p-4" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800">You're on the List!</h2>
-                <p className="text-gray-600">
-                  We'll send you an exclusive invite when Spark AI launches.
-                </p>
-                <p className="text-gray-600">
-                  While you wait, why not <a href="https://discord.gg/aBfj2ByU" 
-                  className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
-                </p>
-                <p className="text-gray-600">
-                  While you wait, why not <a href="https://discord.gg/aBfj2ByU" 
-                  className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
-                </p>
-              </div>
+              <SuccessMessage/>
             )}
           </div>
 
