@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
-import { 
+import {
   Rocket,
   Mail,
   Check,
   MessageCircle,
   Heart,
   Zap,
-  Sparkles
+  Sparkles,
+  Share2,
+  Copy
 } from 'lucide-react';
 
 interface Message {
@@ -21,10 +23,35 @@ interface ChatScenario {
   messages: Message[];
 }
 
+interface ReferralInfo {
+  referralId: string;
+  referralCount: number;
+}
+
 const Home = () => {
   const [state, handleSubmit] = useForm("xzzddpbo");
   const [isHovered, setIsHovered] = useState(false);
   const [activeScenarioIndex, setActiveScenarioIndex] = useState(0);
+  const [referralInfo, setReferralInfo] = useState<ReferralInfo | null>(null);
+  const [showCopied, setShowCopied] = useState(false);
+
+  const features = [
+    {
+      title: "Natural Flow",
+      description: "Keep conversations engaging without overthinking",
+      icon: <Zap className="w-6 h-6" />
+    },
+    {
+      title: "Your Voice, Enhanced",
+      description: "Suggestions that feel authentically you",
+      icon: <Heart className="w-6 h-6" />
+    },
+    {
+      title: "Always Ready",
+      description: "The perfect response when you need it most",
+      icon: <MessageCircle className="w-6 h-6" />
+    }
+  ];
 
   const chatScenarios: ChatScenario[] = [
     {
@@ -50,29 +77,112 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveScenarioIndex((prev) => (prev + 1) % chatScenarios.length);
-    }, 9500);
-    return () => clearInterval(interval);
+    const urlParams = new URLSearchParams(window.location.search);
+    const referredBy = urlParams.get('ref');
+    if (referredBy) {
+      localStorage.setItem('referredBy', referredBy);
+    }
   }, []);
 
-  const features = [
-    {
-      title: "Natural Flow",
-      description: "Keep conversations engaging without overthinking",
-      icon: <Zap className="w-6 h-6" />
-    },
-    {
-      title: "Your Voice, Enhanced",
-      description: "Suggestions that feel authentically you",
-      icon: <Heart className="w-6 h-6" />
-    },
-    {
-      title: "Always Ready",
-      description: "The perfect response when you need it most",
-      icon: <MessageCircle className="w-6 h-6" />
+  const generateReferralId = () => {
+    const timestamp = Date.now().toString(36);
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    return `${timestamp}-${randomStr}`;
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newReferralId = generateReferralId();
+    const referredBy = localStorage.getItem('referredBy');
+
+    // Create a submission object instead of FormData
+    const submission = {
+      email: (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value,
+      message: (e.currentTarget.elements.namedItem('message') as HTMLTextAreaElement).value,
+      referralId: newReferralId,
+      referredBy: referredBy || ''
+    };
+
+    try {
+      await handleSubmit(submission);
+      console.log(referralInfo)
+      setReferralInfo({
+        referralId: newReferralId,
+        referralCount: 0
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
     }
-  ];
+  };
+
+  const copyReferralLink = () => {
+    if (referralInfo) {
+      const referralLink = `${window.location.origin}?ref=${referralInfo.referralId}`;
+      navigator.clipboard.writeText(referralLink);
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
+    }
+  };
+
+  const SuccessMessage = () => (
+    <div className="text-center space-y-4">
+      <div className="flex justify-center mb-4">
+        <Check className="w-16 h-16 text-green-500 bg-green-100 rounded-full p-4" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-800">You're on the List!</h2>
+      <p className="text-gray-600">
+        We'll send you an exclusive invite when Simpify launches.
+      </p>
+
+      {referralInfo && (
+        <div className="mt-6 space-y-4">
+          <h3 className="text-xl font-semibold text-gray-800">Share with Friends</h3>
+          <p className="text-gray-600">
+            Get priority access by inviting others!
+          </p>
+
+          <div className="relative">
+            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <input
+                type="text"
+                readOnly
+                value={`${window.location.origin}?ref=${referralInfo.referralId}`}
+                className="flex-1 bg-transparent border-none focus:ring-0 text-sm"
+              />
+              <button
+                onClick={copyReferralLink}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                {showCopied ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">
+              Referrals: {referralInfo.referralCount}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <p className="text-gray-600 mt-6">
+        While you wait, why not <a href="https://discord.gg/aBfj2ByU"
+          className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
+      </p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
@@ -96,7 +206,7 @@ const Home = () => {
         <div className="grid lg:grid-cols-2 gap-8 mb-16">
           <div className="bg-white shadow-xl rounded-2xl p-8 border border-gray-100 animate-slide-in-left">
             {!state.succeeded ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleFormSubmit} className="space-y-6" method="POST">
                 <div className="relative group">
                   <input
                     id="email"
@@ -107,12 +217,12 @@ const Home = () => {
                     required
                     aria-label="Email address"
                   />
-                  <Mail 
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-purple-500 transition-colors" 
+                  <Mail
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-purple-500 transition-colors"
                     aria-hidden="true"
                   />
-                  <ValidationError 
-                    prefix="Email" 
+                  <ValidationError
+                    prefix="Email"
                     field="email"
                     errors={state.errors}
                     className="text-red-500 text-sm mt-1"
@@ -122,9 +232,15 @@ const Home = () => {
                 <textarea
                   id="message"
                   name="message"
-                  placeholder="Why are you excited about Spark AI? (Optional)"
+                  placeholder="Why are you excited about Simpify? (Optional)"
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-300"
                   rows={3}
+                />
+
+                <input
+                  type="hidden"
+                  name="referredBy"
+                  value={localStorage.getItem('referredBy') || ''}
                 />
 
                 <button
@@ -140,10 +256,8 @@ const Home = () => {
                     ) : (
                       <>
                         Join the Waitlist
-                        <Rocket 
-                          className={`w-5 h-5 transition-transform ${
-                            isHovered ? 'translate-x-1' : ''
-                          }`} 
+                        <Rocket
+                          className={`w-5 h-5 transition-transform ${isHovered ? 'translate-x-1' : ''}`}
                         />
                       </>
                     )}
@@ -151,23 +265,7 @@ const Home = () => {
                 </button>
               </form>
             ) : (
-              <div className="text-center space-y-4">
-                <div className="flex justify-center mb-4">
-                  <Check className="w-16 h-16 text-green-500 bg-green-100 rounded-full p-4" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800">You're on the List!</h2>
-                <p className="text-gray-600">
-                  We'll send you an exclusive invite when Spark AI launches.
-                </p>
-                <p className="text-gray-600">
-                  While you wait, why not <a href="https://discord.gg/aBfj2ByU" 
-                  className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
-                </p>
-                <p className="text-gray-600">
-                  While you wait, why not <a href="https://discord.gg/aBfj2ByU" 
-                  className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
-                </p>
-              </div>
+              <SuccessMessage />
             )}
           </div>
 
@@ -182,17 +280,16 @@ const Home = () => {
             </div>
             <div className="space-y-4">
               {chatScenarios[activeScenarioIndex].messages.map((message, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`flex ${message.isAI ? 'justify-start' : 'justify-end'} animate-fade-in-up`}
                   style={{ animationDelay: `${index * 200}ms` }}
                 >
-                  <div 
-                    className={`max-w-[80%] p-3 rounded-lg ${
-                      message.isAI 
-                        ? 'bg-gray-100 text-gray-900' 
+                  <div
+                    className={`max-w-[80%] p-3 rounded-lg ${message.isAI
+                        ? 'bg-gray-100 text-gray-900'
                         : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
-                    }`}
+                      }`}
                   >
                     {message.text}
                   </div>
@@ -204,8 +301,8 @@ const Home = () => {
 
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           {features.map((feature, index) => (
-            <div 
-              key={feature.title} 
+            <div
+              key={feature.title}
               className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 animate-fade-in-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -233,7 +330,7 @@ const Home = () => {
 
       <footer className="bg-gray-900 text-white py-6">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; {new Date().getFullYear()} Spark AI. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Simpify. All rights reserved.</p>
         </div>
       </footer>
     </div>
