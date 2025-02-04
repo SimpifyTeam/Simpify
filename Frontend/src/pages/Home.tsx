@@ -28,7 +28,7 @@ interface ReferralInfo {
 }
 
 const Home = () => {
-  const [state, handleSubmit] = useForm("xzzddpbo");
+  const [state, handleSubmit] = useForm("mrbekqpb");
   const [isHovered, setIsHovered] = useState(false);
   const [referralInfo, setReferralInfo] = useState<ReferralInfo | null>(null);
   const [showCopied, setShowCopied] = useState(false);
