@@ -177,7 +177,7 @@ const Home = () => {
       )}
 
       <p className="text-gray-600 mt-6">
-        While you wait, why not <a href="https://discord.gg/aBfj2ByU"
+        While you wait, why not <a href="https://discord.gg/3DKuKJJEkf"
           className="text-blue-500 font-semibold hover:underline">join our Discord server</a> to connect with the community?
       </p>
     </div>
