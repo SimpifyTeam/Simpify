@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Rocket,
   Mail,
@@ -180,6 +180,7 @@ const Home = () => {
     try {
       const location = window.location.href;
       console.log("Location: ", location);
+      console.log(activeScenarioIndex)
 
       await fetch(
         "https://script.google.com/macros/s/AKfycbwi1E8YYebzgj_WBenxXijpKp9dOUiyneZL_dKPXwimCnZj8mCrhaMOiq69zv1sAOy7/exec",
