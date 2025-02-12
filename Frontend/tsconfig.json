@@ -4,9 +4,10 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
-  "compilerOptions": {
-    "module": "esnext",
-    "jsx": "react-jsx", // or "react" if using React 17
-    "typeRoots": ["./node_modules/@types", "./src/types"]
-  }
+    "compilerOptions": {
+      "baseUrl": "./src", // Base URL for module resolution
+      "paths": {
+        "@/*": ["*"] // Alias for all files in src
+      }
+    }
 }

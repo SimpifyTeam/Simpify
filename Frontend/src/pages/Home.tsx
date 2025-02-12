@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Rocket,
   Mail,
@@ -11,7 +11,7 @@ import {
   XCircle,
   Link,
   Share2,
-} from "lucide-react";
+} from "lucide-react"
 
 interface Message {
   id: string;
@@ -180,7 +180,6 @@ const Home = () => {
     try {
       const location = window.location.href;
       console.log("Location: ", location);
-      console.log(activeScenarioIndex)
 
       await fetch(
         "https://script.google.com/macros/s/AKfycbwi1E8YYebzgj_WBenxXijpKp9dOUiyneZL_dKPXwimCnZj8mCrhaMOiq69zv1sAOy7/exec",
@@ -327,6 +326,17 @@ const Home = () => {
             Share
           </button>
         </div>
+        <p className="text-gray-600 mt-6">
+          While you wait, why not{" "}
+          <a
+            href="https://discord.gg/3DKuKJJEkf"
+            target="_blank"
+            className="text-blue-500 font-semibold hover:underline"
+          >
+            join our Discord server
+          </a>{" "}
+          to connect with the community?
+        </p>
       </div>
     </div>
   );
