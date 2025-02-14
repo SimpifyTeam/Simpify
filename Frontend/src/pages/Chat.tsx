@@ -65,13 +65,13 @@ const Chat: React.FC = () => {
       <Drawer anchor="left" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
         <Box sx={{ width: 280, backgroundColor: "#1E1E1E", height: "100%", paddingTop: 2 }}>
           <List>
-            <ListItem button>
+            <ListItem component="button">
               <ListItemIcon>
                 <History sx={{ color: "#7C4DFF" }} />
               </ListItemIcon>
               <ListItemText primary="History" sx={{ color: "#E0E0E0" }} />
             </ListItem>
-            <ListItem button>
+            <ListItem component="button">
               <ListItemIcon>
                 <Settings sx={{ color: "#7C4DFF" }} />
               </ListItemIcon>
