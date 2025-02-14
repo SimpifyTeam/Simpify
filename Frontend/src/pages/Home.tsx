@@ -11,7 +11,7 @@ import {
   XCircle,
   Link,
   Share2,
-} from "lucide-react"
+} from "lucide-react";
 
 interface Message {
   id: string;
@@ -121,6 +121,7 @@ const Home = () => {
   const [activeScenarioIndex, setActiveScenarioIndex] = useState<number>(0);
 
   useEffect(() => {
+    setActiveScenarioIndex(0);
     const loadReferralInfo = () => {
       const savedReferral = localStorage.getItem("SimpifyReferral");
       if (savedReferral) {
@@ -474,7 +475,7 @@ const Home = () => {
           <div className="fixed bottom-4 right-4 animate-slide-in-up">
             <div className="bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-3">
               <button
-                onClick={copyReferralLink}
+                onClick={handleCopyReferralLink}
                 className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
                 title="Copy referral link"
               >
