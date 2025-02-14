@@ -118,10 +118,8 @@ const Home = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const [activeScenarioIndex, setActiveScenarioIndex] = useState<number>(0);
 
   useEffect(() => {
-    setActiveScenarioIndex(0);
     const loadReferralInfo = () => {
       const savedReferral = localStorage.getItem("SimpifyReferral");
       if (savedReferral) {
@@ -439,14 +437,14 @@ const Home = () => {
           <div className="bg-white shadow-xl rounded-2xl p-8 border border-gray-100 animate-slide-in-right">
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                {chatScenarios[activeScenarioIndex].title}
+                {chatScenarios[0].title}
               </h3>
               <p className="text-gray-600">
-                {chatScenarios[activeScenarioIndex].description}
+                {chatScenarios[0].description}
               </p>
             </div>
             <div className="space-y-4">
-              {chatScenarios[activeScenarioIndex].messages.map(
+              {chatScenarios[0].messages.map(
                 (message, index) => (
                   <div
                     key={index}
