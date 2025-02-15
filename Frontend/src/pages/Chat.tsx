@@ -66,7 +66,7 @@ const Chat: React.FC = () => {
               <Menu />
             </IconButton>
             <Typography variant="h4" sx={{ color: theme.palette.primary.main, fontWeight: "bold", letterSpacing: "1px" }}>
-              Simplify
+              Simpify
             </Typography>
             <Box>
               <IconButton color="inherit" onClick={() => setDarkMode(!darkMode)} sx={{ transition: "transform 0.3s ease", "&:hover": { transform: "scale(1.1)" } }}>
