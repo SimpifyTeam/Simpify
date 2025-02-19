@@ -18,7 +18,7 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import { CameraAlt, Settings, History, Menu, Brightness4, Brightness7 } from "@mui/icons-material";
-import { getTheme } from "../css/theme"; // Import the theme
+import { getTheme } from "../style/theme"; // Import the theme
 import ChatWindow from "../components/Chat/ChatWindow";
 
 // Define the type for chat history items
