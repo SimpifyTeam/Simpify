@@ -88,7 +88,7 @@ Simpify/
 
 ## 🌎 Live App
 
-Visit the live version of Simpify: [Simpify Website](https://simpify-six.vercel.app/)
+Visit the live version of Simpify: [Simpify Website](https://simpify-ai.vercel.app/)
 
 📢 Stay tuned for our official launch on **February 28!**
 
