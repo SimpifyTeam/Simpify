@@ -18,22 +18,38 @@ const Welcome: React.FC = () => {
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
-    if (!code) return navigate("/login");
 
-    axios
-      .get<{ user: User }>(`http://localhost:5000/auth/callback?code=${code}`)
-      .then((res) => {
+    const fetchData = async () => {
+      if (!code) {
+        navigate("/login");
+        return;
+      }
+
+
+
+
+      try {
+        const res = await axios.get<{ user: User }>(`http://localhost:5000/auth/callback?code=${code}`);
         setUser(res.data.user);
-        setTimeout(
-          () => setMessage("Getting ready for your first chat..."),
-          2000
-        );
-        setTimeout(() => navigate("/chat"), 5000); // Redirect after 5 seconds
-      })
-      .catch(() => navigate("/login"))
-      .finally(() => setLoading(false));
-  }, [code, navigate]);
 
+
+
+
+        setTimeout(() => setMessage("Getting ready for your first chat..."), 2000);
+        setTimeout(() => navigate("/chat"), 5000); // Redirect after 5 seconds
+
+
+
+
+      } catch {
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [code, navigate]);
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-600 to-purple-800 text-white px-4 sm:px-8 md:px-16 lg:px-32">
       <motion.div
