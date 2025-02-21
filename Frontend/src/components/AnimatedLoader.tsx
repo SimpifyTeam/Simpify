@@ -140,25 +140,25 @@ const AnimatedLoader = ({
               />
               <g className="sparkles">
                 <circle
-                  className="sparkle fill-rose-200"
                   cx="-15"
                   cy="-15"
                   r="1.5"
-                  style={{ "--delay": "0s" }}
+                  className=" sparkle fill-rose-200"
+                  style={{ "--delay": "0s" } as React.CSSProperties}
                 />
                 <circle
-                  className="sparkle fill-rose-200"
                   cx="15"
                   cy="-15"
                   r="1.5"
-                  style={{ "--delay": "0.3s" }}
+                  className="sparkle fill-rose-200"
+                  style={{ "--delay": "0.3s" } as React.CSSProperties}
                 />
                 <circle
-                  className="sparkle fill-rose-200"
                   cx="0"
                   cy="22"
                   r="1.5"
-                  style={{ "--delay": "0.6s" }}
+                  className=" sparkle fill-rose-200"
+                  style={{ "--delay": "0.6s" } as React.CSSProperties}
                 />
               </g>
             </g>
