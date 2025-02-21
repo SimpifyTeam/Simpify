@@ -117,7 +117,7 @@ const createFeaturesList = () => ([
 /**
  * Chat scenario examples showing product use cases
  */
-const createChatScenarios = () => ([
+const createChatScenarios = () => [
   {
     TITLE: "Keep the Conversation Flowing",
     DESCRIPTION: "Never run out of things to say",
@@ -138,7 +138,67 @@ const createChatScenarios = () => ([
       "You've got this! Keep it light and genuine",
     ],
   },
-]);
+  {
+    TITLE: "Breaking the Ice",
+    DESCRIPTION: "Start conversations with confidence",
+    MESSAGES: [
+      "I don't know how to start a conversation with them...",
+      "Try this: 'Hey! I noticed we both love hiking. Have you been on any great trails recently?'",
+      "They replied! They're recommending a trail!",
+      "Awesome! Now you have a topic to bond over.",
+    ],
+  },
+  {
+    TITLE: "Deepening Connections",
+    DESCRIPTION: "Move beyond small talk",
+    MESSAGES: [
+      "We've been chatting for a while, but it's all surface-level...",
+      "Ask something meaningful: 'What's something you're really passionate about right now?'",
+      "They're opening up about their passion for photography!",
+      "Now you're building a deeper connection!",
+    ],
+  },
+  {
+    TITLE: "Handling Tough Questions",
+    DESCRIPTION: "Respond gracefully to sensitive topics",
+    MESSAGES: [
+      "They just asked me about my salary... What do I say?",
+      "Try: 'I prefer to keep that private, but I'm happy to talk about my career journey if you're interested!'",
+      "They respected that and changed the topic!",
+      "Well handled! You set boundaries while staying polite.",
+    ],
+  },
+  {
+    TITLE: "Flirty and Fun",
+    DESCRIPTION: "Add a playful tone to your chats",
+    MESSAGES: [
+      "I want to flirt but don't want to come off too strong...",
+      "Try something light: 'If you were a vegetable, you'd be a cute-cumber!'",
+      "They laughed and sent a flirty response back!",
+      "Now you're both having fun! Keep the vibe playful.",
+    ],
+  },
+  {
+    TITLE: "Professional Networking",
+    DESCRIPTION: "Make a great impression in work chats",
+    MESSAGES: [
+      "I need to message someone for a potential job opportunity...",
+      "Start with: 'Hi [Name], I came across your profile and was really impressed by your work on [Project]. Would love to connect and learn more!'",
+      "They responded positively!",
+      "Great start! Now you're building a professional connection.",
+    ],
+  },
+  {
+    TITLE: "Resolving Misunderstandings",
+    DESCRIPTION: "Clarify and move forward",
+    MESSAGES: [
+      "I think they misunderstood what I said...",
+      "Clarify gently: 'I realize my last message might have come off the wrong way. What I meant was...'",
+      "They appreciated the clarification!",
+      "Now the conversation is back on track!",
+    ],
+  },
+];
 
 /**
  * Creates the main UI text configuration object

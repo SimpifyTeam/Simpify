@@ -46,7 +46,8 @@ const userSchema = new Schema(
             default: {}
         },
         tokens: {
-            type: String
+            type: Number, required: [true, "Token cannot be null"],
+            default: 100,
         },
         isPremium: {
             type: Boolean,
