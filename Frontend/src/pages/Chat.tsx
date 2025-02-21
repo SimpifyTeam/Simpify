@@ -69,7 +69,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove }) => {
   );
 };
 
-const ChatPage: React.FC<ChatPageProps> = () => {
+const ChatPage: React.FC = () => {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [files, setFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<string>("");
