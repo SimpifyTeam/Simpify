@@ -17,7 +17,7 @@ import userRouter from "./routers/user.router.js"
 import baseRouter from "./routers/router.js"
 
 // declaring routers
-app.use("api/v1/users", userRouter);
+app.use("/api/v1/users", userRouter);
 app.use("", baseRouter);
 
 export { app }

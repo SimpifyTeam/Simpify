@@ -44,7 +44,7 @@ const authCallback = async (req, res) => {
     }
 
     // Exchange code for user profile data
-    const { user } = await workos.userManagement.authenticate({
+    const { user } = await workos.sso.getProfile({
       clientId: process.env.WORKOS_CLIENT_ID,
       code,
     });
@@ -66,13 +66,12 @@ const authCallback = async (req, res) => {
         provider,
       });
     }
-
-    // Respond with user data (Modify to handle sessions or JWT if needed)
-    res.status(200).json({ user: existingUser });
+    res.status(200).json({ 
+      message: "User Data added to database",
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Export controllers
 export { registerUser, loginUser, authCallback };

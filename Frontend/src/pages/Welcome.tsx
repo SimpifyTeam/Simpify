@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import dotenv from "dotenv";
 
 // Define types for the user data
 interface User {
@@ -11,42 +10,34 @@ interface User {
 }
 
 const Welcome: React.FC = () => {
-  dotenv.config()
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
-  const BACKEND_URL = "http://localhost:5000/";
-  const url = `${BACKEND_URL}/callback?code=`
+  const BACKEND_URL = "http://localhost:5000/api/v1/users";
+  const url = `${BACKEND_URL}/callback?code=`;
 
   useEffect(() => {
-
     const fetchData = async () => {
       if (!code) {
-        navigate("/login"); 
+        navigate("/login");
         return;
       }
-
-
-
 
       try {
         const res = await axios.get<{ user: User }>(`${url} ${code}`);
         setUser(res.data.user);
+        console.log(res.data);
 
-
-
-
-        setTimeout(() => setMessage("Getting ready for your first chat..."), 2000);
+        setTimeout(
+          () => setMessage("Getting ready for your first chat..."),
+          2000
+        );
         setTimeout(() => navigate("/chat"), 5000); // Redirect after 5 seconds
-
-
-
-
       } catch {
-        navigate("/login");
+        console.log("Error");
       } finally {
         setLoading(false);
       }
