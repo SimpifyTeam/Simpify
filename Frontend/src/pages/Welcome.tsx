@@ -18,7 +18,7 @@ const Welcome: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
-  const BACKEND_URL = process.env.SIMPIFY_BACKEND_URL;
+  const BACKEND_URL = "http://localhost:5000/";
   const url = `${BACKEND_URL}/callback?code=`
 
   useEffect(() => {

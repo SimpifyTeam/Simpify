@@ -13,24 +13,23 @@
     "@chakra-ui/react": "^3.8.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.4.4",
-    "@mui/material": "^6.4.4",
     "@tailwindcss/vite": "^4.0.6",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "framer-motion": "^12.4.2",
     "lucide-react": "^0.475.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-router-dom": "^7.1.5",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "^18.0.10",
+    "@types/react-dom": "^18.0.5",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
+    "esbuild": "^0.25.0",
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
@@ -39,6 +38,6 @@
     "tailwindcss": "^4.0.6",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
-    "vite": "^6.1.1"
+    "vite": "^0.10.3"
   }
 }
