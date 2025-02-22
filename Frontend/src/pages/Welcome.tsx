@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import dotenv from "dotenv";
 
 // Define types for the user data
 interface User {
@@ -10,18 +11,21 @@ interface User {
 }
 
 const Welcome: React.FC = () => {
+  dotenv.config()
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
+  const BACKEND_URL = process.env.SIMPIFY_BACKEND_URL;
+  const url = `${BACKEND_URL}/callback?code=`
 
   useEffect(() => {
 
     const fetchData = async () => {
       if (!code) {
-        navigate("/login");
+        navigate("/login"); 
         return;
       }
 
@@ -29,7 +33,7 @@ const Welcome: React.FC = () => {
 
 
       try {
-        const res = await axios.get<{ user: User }>(`http://localhost:5000/auth/callback?code=${code}`);
+        const res = await axios.get<{ user: User }>(`${url} ${code}`);
         setUser(res.data.user);
 
 

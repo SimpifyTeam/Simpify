@@ -1,1 +1,3 @@
-export const DB_NAME = "Simpify";
+const DB_NAME = "Simpify";
+
+export default { DB_NAME };
