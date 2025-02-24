@@ -4,10 +4,32 @@ import bodyParser from "body-parser";
 
 const app = express();
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+const allowedOrigins = [
+  "https://simpify-ai.vercel.app",
+  "http://localhost:5173", 
+  "*",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-}));
+  })
+);
+
+app.use((err, req, res, next) => {
+  console.error("Error:", err);
+  res
+    .status(500)
+    .json({ message: "Internal Server Error", error: err.message });
+});
+
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

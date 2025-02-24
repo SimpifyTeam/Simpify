@@ -37,6 +37,8 @@ const loginUser = async (req, res) => {
 const authCallback = async (req, res) => {
   try {
     const { code, gender, age, location, goal } = req.query;
+    console.log("Received request with code:", req.query.code);
+
 
     if (!code) {
       return res.status(400).json({ error: "Authorization code is missing, Code is required" });
@@ -83,9 +85,10 @@ const authCallback = async (req, res) => {
       user: existingUser,
     });
   } catch (error) {
+    //console.error("Error in /users/callback:", error);
     res.status(500).json({
        error: error.message,
-       errorCode: error.errorCode 
+       errorMessage: error 
       });
   }
 };
