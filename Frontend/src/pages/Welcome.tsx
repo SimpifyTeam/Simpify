@@ -134,10 +134,12 @@ const Welcome: React.FC = () => {
 
     try {
       await axios.get(callbackUrl, {
-        age: onboardingData.age,
-        gender: onboardingData.gender,
-        goal: onboardingData.goal,
-        location: onboardingData.location,
+        params: {
+          age: onboardingData.age,
+          gender: onboardingData.gender,
+          goal: onboardingData.goal,
+          location: onboardingData.location,
+        }
       });
 
       setTimeout(() => setMessage("Almost there!"), 1500);
