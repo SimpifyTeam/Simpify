@@ -9,7 +9,7 @@ interface OnboardingData {
   goal: string;
   gender: string;
   age: string;
-  location: string; // Stores country
+  location: string; 
 }
 
 const Welcome: React.FC = () => {
@@ -17,7 +17,6 @@ const Welcome: React.FC = () => {
   const code = searchParams.get("code");
   const navigate = useNavigate();
 
-  // Onboarding state
   const [step, setStep] = useState<number>(0);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     interests: [],
@@ -28,14 +27,12 @@ const Welcome: React.FC = () => {
     location: "",
   });
 
-  // Transition message state
   const [message, setMessage] = useState<string>("");
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const BACKEND_URL = "http://localhost:5000/api/v1/users";
   const callbackUrl = `${BACKEND_URL}/callback?code=`;
 
-  // Interest options (aligned with Simpify's goals)
   const interestOptions = [
     "Improving Conversations",
     "Building Confidence",
@@ -48,7 +45,6 @@ const Welcome: React.FC = () => {
     "Conflict Resolution",
   ];
 
-  // Communication style options
   const communicationStyles = [
     "Professional",
     "Casual",
@@ -57,10 +53,8 @@ const Welcome: React.FC = () => {
     "Persuasive",
   ];
 
-  // Gender options
   const genderOptions = ["Male", "Female", "Non-binary", "Prefer not to say"];
 
-  // Age range options (starting from 14)
   const ageRangeOptions = [
     "14-17",
     "18-24",
@@ -72,7 +66,6 @@ const Welcome: React.FC = () => {
     "Prefer not to say",
   ];
 
-  // Country options
   const countryOptions = [
     "United States",
     "Canada",
@@ -140,8 +133,11 @@ const Welcome: React.FC = () => {
     setMessage("Personalizing your Simpify experience...");
 
     try {
-      await axios.post(callbackUrl, {
-        ...onboardingData,
+      await axios.post(`${callbackUrl} ${code}`, {
+        age: onboardingData.age,
+        gender: onboardingData.gender,
+        goal: onboardingData.goal,
+        location: onboardingData.location,
       });
 
       setTimeout(() => setMessage("Almost there!"), 1500);
