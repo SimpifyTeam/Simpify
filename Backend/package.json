@@ -13,8 +13,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@workos-inc/node": "^7.39.0",
+    "@workos-inc/node": "^7.14.0",
     "authkit": "^0.0.1",
+    "axios": "^1.7.9",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",

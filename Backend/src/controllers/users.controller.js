@@ -1,12 +1,12 @@
 import { User } from "../models/users.model.js";
+import { generateUsername } from "../utils/generateUsername.js";
 import dotenv from "dotenv";
 import { WorkOS } from "@workos-inc/node";
 
 dotenv.config();
 
-const workos = new WorkOS(process.env.WORKOS_API_KEY, {
-  clientID: process.env.WORKOS_CLIENT_ID,
-});
+const workos = new WorkOS(process.env.WORKOS_API_KEY);
+const clientId = process.env.WORKOS_CLIENT_ID;
 
 // 🔹 Register User (If manually adding users)
 const registerUser = async (req, res) => {
@@ -22,55 +22,71 @@ const registerUser = async (req, res) => {
 // 🔹 Generate Login URL for OAuth
 const loginUser = async (req, res) => {
   try {
-    const authorizationUrl = workos.userManagement.getAuthorizationUrl({
+    const authorizationUrl = workos.sso.getAuthorizationUrl({
       provider: "authkit",
-      redirectUri: process.env.REDIRECT_URI, // Use the correct redirect URI
+      redirectUri: process.env.REDIRECT_URI, // Ensure this matches WorkOS settings
       clientId: process.env.WORKOS_CLIENT_ID,
     });
-
     res.json({ authorizationUrl });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// 🔹 Handle OAuth Callback
+// 🔹 OAuth Callback Handler (Using WorkOS SDK)
 const authCallback = async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, gender, age, location, goal } = req.query;
 
     if (!code) {
-      return res.status(400).json({ error: "Authorization code is missing" });
+      return res.status(400).json({ error: "Authorization code is missing, Code is required" });
     }
 
-    // Exchange code for user profile data
-    const { user } = await workos.sso.getProfile({
-      clientId: process.env.WORKOS_CLIENT_ID,
-      code,
-    });
+    // Exchange authorization code for a WorkOS profile
+    const { profile } = await workos.sso.getProfileAndToken({ code, clientId });
 
-    // Extract user data
-    const { id, email, firstName, lastName, profilePictureUrl, provider } =
-      user;
+    const { id, email, first_name, last_name, profile_picture_url, provider } =
+      profile;
 
-    // Check if user exists in MongoDB
+    // Check if the user already exists in MongoDB
     let existingUser = await User.findOne({ workosId: id });
 
     if (!existingUser) {
-      // Create a new user
+      // Generate a unique username
+      const username = await generateUsername(first_name, last_name);
+
+      // Create a new user in the database
       existingUser = await User.create({
         workosId: id,
         email,
-        name: `${firstName} ${lastName}`,
-        avatar: profilePictureUrl,
+        firstName: first_name,
+        lastName: last_name,
+        username,
+        avatar: profile_picture_url,
         provider,
+        gender,
+        age,
+        location,
+        goal,
       });
+    } else {
+      // Update user info if they already exist
+      existingUser.gender = gender;
+      existingUser.age = age;
+      existingUser.location = location;
+      existingUser.goal = goal;
+      await existingUser.save();
     }
-    res.status(200).json({ 
-      message: "User Data added to database",
+
+    res.status(200).json({
+      message: "User authenticated successfully",
+      user: existingUser,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+       error: error.message,
+       errorCode: error.errorCode 
+      });
   }
 };
 
