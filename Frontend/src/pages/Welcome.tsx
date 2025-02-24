@@ -31,7 +31,7 @@ const Welcome: React.FC = () => {
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const BACKEND_URL = "http://localhost:5000/api/v1/users";
-  const callbackUrl = `${BACKEND_URL}/callback?code=`;
+  const callbackUrl = `${BACKEND_URL}/callback?code=${code}`;
 
   const interestOptions = [
     "Improving Conversations",
@@ -133,7 +133,7 @@ const Welcome: React.FC = () => {
     setMessage("Personalizing your Simpify experience...");
 
     try {
-      await axios.post(`${callbackUrl} ${code}`, {
+      await axios.get(callbackUrl, {
         age: onboardingData.age,
         gender: onboardingData.gender,
         goal: onboardingData.goal,
