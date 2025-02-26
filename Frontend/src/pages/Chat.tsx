@@ -141,9 +141,10 @@ const ModelsDropdown: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState("Conversation Expert");
 
   const models = [
-    "Conversation Expert",
-    "Rizz Master",
-    "Small Talk Pro",
+    "Conversation Continuation",
+    "Rizz Generator",
+    "AI Chat",
+    "Chat Analysis",
     "Dating Coach",
   ];
 
@@ -175,6 +176,10 @@ const ModelsDropdown: React.FC = () => {
           ))}
         </div>
       )}
+
+      <p className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-purple-700 text-transparent bg-clip-text mx-115 ">
+        Simpify
+      </p>
     </div>
   );
 };
@@ -507,8 +512,7 @@ const ChatPage: React.FC = () => {
               </div>
 
               <p className="text-xs text-center text-gray-500 mt-2">
-                ConvoAI may produce inaccurate information about people, places,
-                or facts.
+                Simpify is not a Human, and response are AI generated.
               </p>
             </form>
           </div>
@@ -519,4 +523,3 @@ const ChatPage: React.FC = () => {
 };
 
 export default ChatPage;
-
