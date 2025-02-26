@@ -38,7 +38,7 @@ const userSchema = new Schema(
       default: "Casual",
     },
     age: {
-      type: Number,
+      type: mongoose.Schema.Types.Mixed,
     },
     location: {
       type: String,

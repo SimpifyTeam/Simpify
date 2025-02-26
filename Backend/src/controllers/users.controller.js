@@ -146,6 +146,7 @@ const authCallback = async (req, res) => {
     }
 
     // Return user info
+    console.log("User Created Successfully");
     res.status(200).json({
       message: "User authenticated successfully",
       user: existingUser,
