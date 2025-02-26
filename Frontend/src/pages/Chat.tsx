@@ -14,7 +14,6 @@ import {
   ThumbsUp,
   ThumbsDown,
   Copy,
-  MoreHorizontal,
   ChevronDown,
   Zap,
   Settings,
@@ -521,14 +520,3 @@ const ChatPage: React.FC = () => {
 
 export default ChatPage;
 
-// Add these to your global CSS file
-/*
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
-}
-*/
