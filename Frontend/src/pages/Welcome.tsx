@@ -139,6 +139,7 @@ const Welcome: React.FC = () => {
           gender: onboardingData.gender,
           goal: onboardingData.goal,
           location: onboardingData.location,
+          communicationStyles: onboardingData.communicationStyle,
         }
       });
 

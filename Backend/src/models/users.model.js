@@ -15,7 +15,6 @@ const userSchema = new Schema(
     },
     lastName: {
       type: String,
-      required: [true, "last name is required"],
     },
     email: {
       type: String,
@@ -24,11 +23,19 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
       index: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please provide a valid email address",
+      ],
     },
     gender: {
       type: String,
-      enum: ["M", "F", "Others", "Prefer not to say"],
-      required: [true, "gender is required"],
+      enum: ["Male", "Female", "Others", "Prefer not to say"],
+    },
+    communicationStyle: {
+      type: String,
+      enum: ["Casual", "Formal", "Direct", "Detailed", "Concise"],
+      default: "Casual",
     },
     age: {
       type: Number,
@@ -39,7 +46,6 @@ const userSchema = new Schema(
     goal: {
       type: String,
     },
-
     preferences: {
       type: Schema.Types.Mixed,
       default: {},
@@ -55,6 +61,10 @@ const userSchema = new Schema(
     },
     subscriptionExpiryDate: {
       type: Date,
+    },
+    betaTester: {
+      type: Boolean,
+      default: false,
     },
     workosId: {
       type: String,
@@ -75,4 +85,14 @@ const userSchema = new Schema(
   }
 );
 
-export const User = mongoose.model("User", userSchema);
+userSchema.pre("save", function (next) {
+  if (this.isModified("email")) {
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(this.email)) {
+      return next(new Error("Please provide a valid email address"));
+    }
+  }
+  next();
+});
+
+export const User = mongoose.models.User || mongoose.model("User", userSchema);

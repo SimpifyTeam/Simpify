@@ -1,14 +1,21 @@
 import { User } from "../models/users.model.js";
 import { generateUsername } from "../utils/generateUsername.js";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { WorkOS } from "@workos-inc/node";
 
 dotenv.config();
 
+// Initialize WorkOS SDK with API key from environment variables
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 const clientId = process.env.WORKOS_CLIENT_ID;
 
-// 🔹 Register User (If manually adding users)
+/**
+ * Register a new user with basic email
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} Response with success message or error
+ */
 const registerUser = async (req, res) => {
   try {
     const { email } = req.body;
@@ -19,57 +26,106 @@ const registerUser = async (req, res) => {
   }
 };
 
-// 🔹 Generate Login URL for OAuth
+/**
+ * Generate authorization URL for WorkOS AuthKit authentication
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} Response with authorization URL or error
+ */
 const loginUser = async (req, res) => {
   try {
-    const authorizationUrl = workos.sso.getAuthorizationUrl({
+    // Create authorization URL for AuthKit
+    const authorizationUrl = workos.userManagement.getAuthorizationURL({
       provider: "authkit",
-      redirectUri: process.env.REDIRECT_URI, // Ensure this matches WorkOS settings
+      redirectUri: process.env.REDIRECT_URI,
       clientId: process.env.WORKOS_CLIENT_ID,
     });
+
     res.json({ authorizationUrl });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// 🔹 OAuth Callback Handler (Using WorkOS SDK)
+/**
+ * Handle OAuth callback and user authentication/creation
+ * Supports special promotions based on date and sets subscription details
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} Response with authenticated user or error
+ */
 const authCallback = async (req, res) => {
   try {
-    const { code, gender, age, location, goal } = req.query;
-    console.log("Received request with code:", req.query.code);
+    const { code } = req.query;
+    const { gender, age, location, goal, communicationStyle } = req.query;
 
+    console.log("Received request with code:", code);
 
     if (!code) {
-      return res.status(400).json({ error: "Authorization code is missing, Code is required" });
+      return res
+        .status(400)
+        .json({ error: "Authorization code is missing, Code is required" });
     }
 
-    // Exchange authorization code for a WorkOS profile
-    const { profile } = await workos.sso.getProfileAndToken({ code, clientId });
+    // Exchange the authorization code for user data using authenticateWithCode
+    const authenticateResponse =
+      await workos.userManagement.authenticateWithCode({
+        clientId: process.env.WORKOS_CLIENT_ID,
+        code,
+        session: {
+          sealSession: true,
+          cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
+        },
+      });
 
-    const { id, email, first_name, last_name, profile_picture_url, provider } =
-      profile;
+    const { user, sealedSession } = authenticateResponse;
+
+    // Store the session in a cookie
+    res.cookie("wos-session", sealedSession, {
+      path: "/",
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+    });
 
     // Check if the user already exists in MongoDB
-    let existingUser = await User.findOne({ workosId: id });
+    let existingUser = await User.findOne({ workosId: user.id });
+
+    // Check if the current date is March 31st
+    const currentDate = new Date();
+    const isMarch31st =
+      currentDate.getMonth() === 2 && currentDate.getDate() === 31;
+
+    // Calculate subscription expiry (30 days from now)
+    const subscriptionExpiryDate = new Date();
+    subscriptionExpiryDate.setDate(subscriptionExpiryDate.getDate() + 30);
 
     if (!existingUser) {
       // Generate a unique username
-      const username = await generateUsername(first_name, last_name);
+      const username = await generateUsername(
+        user.firstName || "",
+        user.lastName || ""
+      );
 
       // Create a new user in the database
       existingUser = await User.create({
-        workosId: id,
-        email,
-        firstName: first_name,
-        lastName: last_name,
+        workosId: user.id,
+        email: user.email,
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
         username,
-        avatar: profile_picture_url,
-        provider,
+        avatar: user.profilePictureUrl || "",
+        provider: user.provider || "authkit",
         gender,
         age,
         location,
         goal,
+        communicationStyle,
+        // Set premium and beta status based on date
+        isPremium: !isMarch31st,
+        betaTester: !isMarch31st,
+        // Set subscription expiry date (30 days from now)
+        subscriptionExpiryDate: !isMarch31st ? subscriptionExpiryDate : null,
       });
     } else {
       // Update user info if they already exist
@@ -77,19 +133,29 @@ const authCallback = async (req, res) => {
       existingUser.age = age;
       existingUser.location = location;
       existingUser.goal = goal;
+      existingUser.communicationStyle = communicationStyle;
+
+      // Update premium status if not March 31st
+      if (!isMarch31st) {
+        existingUser.isPremium = true;
+        existingUser.betaTester = true;
+        existingUser.subscriptionExpiryDate = subscriptionExpiryDate;
+      }
+
       await existingUser.save();
     }
 
+    // Return user info
     res.status(200).json({
       message: "User authenticated successfully",
       user: existingUser,
     });
   } catch (error) {
-    //console.error("Error in /users/callback:", error);
+    console.error("Authentication error:", error);
     res.status(500).json({
-       error: error.message,
-       errorMessage: error 
-      });
+      error: error.message,
+      errorMessage: error,
+    });
   }
 };
 
