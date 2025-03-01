@@ -389,8 +389,8 @@ const ChatPage: React.FC = () => {
               </button>
 
               {/* Mobile logo - visible on small screens */}
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent md:hidden">
-                ConvoAI
+              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent md:hidden" onClick={() => setSidebarOpen(false)}>
+                Simpify
               </h1>
 
               {/* Model selector - desktop */}
