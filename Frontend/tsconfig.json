@@ -5,9 +5,9 @@
     { "path": "./tsconfig.node.json" }
   ],
     "compilerOptions": {
-      "baseUrl": "./src", // Base URL for module resolution
+      "baseUrl": ".", 
       "paths": {
-        "@/*": ["*"] // Alias for all files in src
+        "@/*": ["./src/*"] 
       }
     }
 }

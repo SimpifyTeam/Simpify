@@ -4,7 +4,6 @@ import {
   X,
   Moon,
   Sun,
-  Menu,
   MessageSquare,
   Send,
   Plus,
@@ -14,11 +13,29 @@ import {
   ThumbsUp,
   ThumbsDown,
   Copy,
-  ChevronDown,
   Zap,
   Settings,
   LogOut,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback} from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Types
 interface Message {
@@ -26,6 +43,7 @@ interface Message {
   content: string;
   role: "user" | "assistant";
   timestamp: Date;
+  files?: File[];
 }
 
 interface ChatSession {
@@ -70,12 +88,14 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove }) => {
       <div className="flex-1 min-w-0">
         <p className="text-xs font-medium truncate max-w-[60px]">{file.name}</p>
       </div>
-      <button
+      <Button
         onClick={() => onRemove(file)}
-        className="absolute -top-1 -right-1 bg-gray-100 dark:bg-gray-700 rounded-full p-[2px] shadow-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        variant="ghost"
+        size="icon"
+        className="absolute -top-1 -right-1 h-5 w-5 bg-gray-100 dark:bg-gray-700 rounded-full shadow-sm"
       >
         <X className="w-3 h-3 text-gray-500" />
-      </button>
+      </Button>
     </div>
   );
 };
@@ -86,110 +106,128 @@ const MessageItem: React.FC<{ message: Message }> = ({ message }) => {
 
   return (
     <div
-      className={`py-6 px-4 md:px-8 lg:px-12 ${
-        message.role === "assistant"
-          ? "bg-white dark:bg-gray-800"
-          : "bg-gray-50 dark:bg-gray-900"
+      className={`py-4 px-3 md:px-6 flex ${
+        message.role === "assistant" ? "justify-start" : "justify-end"
       }`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="max-w-3xl mx-auto flex gap-4">
-        <div
-          className={`flex-shrink-0 w-8 h-8 rounded-full overflow-hidden flex items-center justify-center ${
-            message.role === "assistant"
-              ? "bg-purple-600"
-              : "bg-gray-300 dark:bg-gray-700"
-          }`}
-        >
-          {message.role === "assistant" ? (
-            <Sparkles className="w-4 h-4 text-white" />
-          ) : (
-            <User className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-          )}
-        </div>
+      <div className="max-w-2xl mx-auto flex gap-3">
+        {message.role === "assistant" && (
+          <Avatar className="w-8 h-8 bg-purple-600">
+            <AvatarFallback>
+              <Sparkles className="w-4 h-4 text-white" />
+            </AvatarFallback>
+          </Avatar>
+        )}
         <div className="flex-1">
-          <div className="prose dark:prose-invert max-w-none">
+          <div
+            className={`prose dark:prose-invert max-w-none text-sm md:text-base ${
+              message.role === "assistant"
+                ? "bg-white dark:bg-gray-800"
+                : "bg-purple-100 dark:bg-purple-900"
+            } p-4 rounded-lg`}
+          >
             {message.content}
           </div>
 
+          {/* Display files if present */}
+          {message.files && message.files.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {message.files.map((file, index) => (
+                <FilePreview
+                  key={index}
+                  file={file}
+                  onRemove={() => {}} // Read-only in messages
+                />
+              ))}
+            </div>
+          )}
+
           {showActions && (
-            <div className="flex mt-4 space-x-2 items-center text-gray-500 animate-fadeIn">
-              <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                <Copy className="w-4 h-4" />
-              </button>
-              <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                <ThumbsUp className="w-4 h-4" />
-              </button>
-              <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                <ThumbsDown className="w-4 h-4" />
-              </button>
-              <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                <RefreshCw className="w-4 h-4" />
-              </button>
+            <div className="flex mt-3 space-x-1 items-center text-gray-500 animate-fadeIn">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Copy message</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <ThumbsUp className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Helpful</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <ThumbsDown className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Not helpful</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Regenerate response</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
         </div>
+        {message.role === "user" && (
+          <Avatar className="w-8 h-8 bg-gray-300 dark:bg-gray-700">
+            <AvatarFallback>
+              <User className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+            </AvatarFallback>
+          </Avatar>
+        )}
       </div>
-    </div>
-  );
-};
-
-// Models dropdown component
-const ModelsDropdown: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("Conversation Expert");
-
-  const models = [
-    "Conversation Continuation",
-    "Rizz Generator",
-    "AI Chat",
-    "Chat Analysis",
-    "Dating Coach",
-  ];
-
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-      >
-        <span className="text-sm font-medium">{selectedModel}</span>
-        <ChevronDown className="w-4 h-4" />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50 animate-fadeIn">
-          {models.map((model) => (
-            <button
-              key={model}
-              onClick={() => {
-                setSelectedModel(model);
-                setIsOpen(false);
-              }}
-              className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-                selectedModel === model ? "bg-gray-100 dark:bg-gray-700" : ""
-              }`}
-            >
-              {model}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <p className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-purple-700 text-transparent bg-clip-text mx-115 ">
-        Simpify
-      </p>
     </div>
   );
 };
 
 // Main Component
 const ChatPage: React.FC = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  // Use localStorage for theme persistence
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    // Check for saved theme preference or system preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) return savedTheme as "light" | "dark";
+
+    // Check system preference
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      return "dark";
+    }
+
+    return "light";
+  });
+
   const [files, setFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 768);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(!isMobile);
+  const [selectedModel, setSelectedModel] = useState("Conversation Expert");
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([
     {
       id: "1",
@@ -219,12 +257,44 @@ const ChatPage: React.FC = () => {
       messages: [],
     },
   ]);
-  const [currentChatId, setCurrentChatId] = useState<string>("1");
+  const [currentChatId, setCurrentChatId] = useState<string>("2"); // Default to second conversation
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentChat =
     chatSessions.find((chat) => chat.id === currentChatId) || chatSessions[0];
+
+  // Toggle theme
+  const toggleTheme = useCallback(() => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark");
+  }, [theme]);
+
+  // Set theme class on document
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [sidebarOpen]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -258,12 +328,13 @@ const ChatPage: React.FC = () => {
       e.preventDefault();
       if (!message.trim() && files.length === 0) return;
 
-      // Add user message
+      // Add user message with files
       const userMessage: Message = {
         id: Date.now().toString(),
         content: message,
         role: "user",
         timestamp: new Date(),
+        files: files.length > 0 ? [...files] : undefined,
       };
 
       // Simulate assistant response
@@ -290,8 +361,13 @@ const ChatPage: React.FC = () => {
       // Clear input
       setMessage("");
       setFiles([]);
+
+      // Auto-close sidebar on mobile after sending message
+      if (isMobile && sidebarOpen) {
+        setSidebarOpen(false);
+      }
     },
-    [message, files, currentChatId]
+    [message, files, currentChatId, isMobile, sidebarOpen]
   );
 
   const createNewChat = () => {
@@ -304,119 +380,144 @@ const ChatPage: React.FC = () => {
 
     setChatSessions((prev) => [...prev, newChat]);
     setCurrentChatId(newChat.id);
+
+    // Auto-close sidebar on mobile after creating new chat
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
   };
+
+  const models = [
+    "Conversation Expert",
+    "Rizz Generator",
+    "AI Chat",
+    "Chat Analysis",
+    "Dating Coach",
+  ];
 
   return (
     <div className={theme === "dark" ? "dark" : ""}>
       <div className="flex h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        {/* Sidebar */}
-        <aside
-          className={`fixed md:relative inset-y-0 left-0 z-20 flex flex-col bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out ${
-            sidebarOpen ? "w-64" : "w-0 md:w-16 overflow-hidden"
-          }`}
-        >
-          {/* New Chat Button */}
-          <button
-            onClick={createNewChat}
-            className="mx-3 mt-3 mb-1 flex items-center gap-3 rounded-md border border-gray-200 dark:border-gray-600 py-2 px-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        {/* Mobile Sidebar using Sheet from shadcn */}
+        {isMobile ? (
+          <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+            <SheetContent side="left" className="p-0 w-64">
+              <SidebarContent
+                chatSessions={chatSessions}
+                currentChatId={currentChatId}
+                setCurrentChatId={setCurrentChatId}
+                createNewChat={createNewChat}
+                toggleTheme={toggleTheme}
+                theme={theme}
+                setSidebarOpen={setSidebarOpen}
+                isMobile={isMobile}
+              />
+            </SheetContent>
+          </Sheet>
+        ) : (
+          /* Desktop Sidebar */
+          <aside
+            className={`relative z-20 flex flex-col bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out ${
+              sidebarOpen ? "w-64" : "w-16"
+            }`}
           >
-            <Plus className="w-4 h-4" />
-            {sidebarOpen && <span>New conversation</span>}
-          </button>
-
-          {/* Chat History */}
-          <div className="flex-1 overflow-y-auto py-2 px-3">
-            <div className="space-y-1">
-              {chatSessions.map((chat) => (
-                <button
-                  key={chat.id}
-                  onClick={() => setCurrentChatId(chat.id)}
-                  className={`w-full flex items-center gap-3 rounded-md py-2 px-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-                    currentChatId === chat.id
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : ""
-                  }`}
-                >
-                  <MessageSquare className="w-4 h-4 flex-shrink-0" />
-                  {sidebarOpen && (
-                    <span className="truncate">{chat.title}</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* User Section */}
-          <div className="flex flex-col p-3 border-t border-gray-200 dark:border-gray-700">
-            {sidebarOpen && (
-              <>
-                <div className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
-                  <button className="w-full flex items-center gap-3 rounded-md py-2 px-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <Settings className="w-4 h-4" />
-                    <span>Settings</span>
-                  </button>
-                </div>
-              </>
-            )}
-
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
-                <User className="w-4 h-4 text-purple-600 dark:text-purple-300" />
-              </div>
-              {sidebarOpen && (
-                <div className="flex-1">
-                  <p className="text-sm font-medium">User Account</p>
-                  <button className="text-xs text-gray-500 flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-300">
-                    <LogOut className="w-3 h-3" />
-                    Sign out
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </aside>
+            <SidebarContent
+              chatSessions={chatSessions}
+              currentChatId={currentChatId}
+              setCurrentChatId={setCurrentChatId}
+              createNewChat={createNewChat}
+              toggleTheme={toggleTheme}
+              theme={theme}
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              isMobile={isMobile}
+            />
+          </aside>
+        )}
 
         {/* Main Content */}
         <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
           {/* Top navbar */}
           <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between py-2 px-4">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
+              {/* Mobile menu button */}
+              {isMobile && (
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSidebarOpen(true)}
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+              )}
 
-              {/* Mobile logo - visible on small screens */}
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent md:hidden" onClick={() => setSidebarOpen(false)}>
-                Simpify
-              </h1>
-
-              {/* Model selector - desktop */}
-              <div className="hidden md:block">
-                <ModelsDropdown />
-              </div>
+              {/* Desktop sidebar toggle button */}
+              {!isMobile && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                >
+                  <MessageSquare className="w-5 h-5" />
+                </Button>
+              )}
             </div>
 
+            {/* Centered Logo */}
+            <h1 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              Simpify
+            </h1>
+
+            {/* Model dropdown and theme toggle */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-1 text-sm"
+                  >
+                    <span className="hidden md:inline-flex">
+                      {selectedModel}
+                    </span>
+                    <Badge variant="outline" className="ml-1">
+                      AI
+                    </Badge>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {models.map((model) => (
+                    <DropdownMenuItem
+                      key={model}
+                      onClick={() => setSelectedModel(model)}
+                      className={
+                        selectedModel === model
+                          ? "bg-gray-100 dark:bg-gray-700"
+                          : ""
+                      }
+                    >
+                      {model}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="rounded-full"
               >
                 {theme === "light" ? (
                   <Moon className="w-5 h-5" />
                 ) : (
                   <Sun className="w-5 h-5" />
                 )}
-              </button>
+              </Button>
             </div>
           </header>
-
-          {/* Model selector - mobile */}
-          <div className="md:hidden border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <ModelsDropdown />
-          </div>
 
           {/* Welcome Screen */}
           {currentChat.messages.length === 0 ? (
@@ -432,17 +533,21 @@ const ChatPage: React.FC = () => {
                   Get personalized feedback, suggestions, and practice to
                   improve your communication skills.
                 </p>
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  <button className="flex flex-col items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                    <MessageSquare className="w-6 h-6 text-purple-600 mb-2" />
-                    <span className="text-sm font-medium">
-                      Practice Conversations
-                    </span>
-                  </button>
-                  <button className="flex flex-col items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                    <Zap className="w-6 h-6 text-purple-600 mb-2" />
-                    <span className="text-sm font-medium">Get Rizz Tips</span>
-                  </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                  <Card className="hover:bg-white dark:hover:bg-gray-800 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex flex-col items-center">
+                      <MessageSquare className="w-6 h-6 text-purple-600 mb-2" />
+                      <span className="text-sm font-medium">
+                        Practice Conversations
+                      </span>
+                    </CardContent>
+                  </Card>
+                  <Card className="hover:bg-white dark:hover:bg-gray-800 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex flex-col items-center">
+                      <Zap className="w-6 h-6 text-purple-600 mb-2" />
+                      <span className="text-sm font-medium">Get Rizz Tips</span>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>
@@ -457,7 +562,7 @@ const ChatPage: React.FC = () => {
 
           {/* Input Area */}
           <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3">
-            <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
+            <div className="max-w-2xl mx-auto">
               {/* File Preview */}
               {files.length > 0 && (
                 <div className="mb-2 flex flex-wrap gap-2">
@@ -471,54 +576,176 @@ const ChatPage: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex relative">
+              <form onSubmit={handleSubmit} className="flex relative">
                 <div className="flex-1 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm focus-within:border-purple-500 focus-within:ring-1 focus-within:ring-purple-500">
-                  <textarea
+                  <Textarea
                     ref={textareaRef}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
-                        handleSubmit(e);
+                        handleSubmit(e as any);
                       }
                     }}
-                    rows={1}
-                    placeholder="Ask how to improve your conversation skills..."
-                    className="w-full resize-none border-0 bg-transparent py-3 px-3 outline-none focus:ring-0 dark:text-white text-sm md:text-base"
+                    placeholder="Message Simpify..."
+                    className="min-h-10 max-h-[200px] w-full resize-none border-0 bg-transparent py-3 px-3 outline-none focus:ring-0 dark:text-white text-sm"
                   />
 
                   <div className="flex items-center border-t border-gray-200 dark:border-gray-600 px-3 py-2">
-                    <label className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                      <Upload className="w-5 h-5" />
-                      <input
-                        type="file"
-                        multiple
-                        onChange={handleFileUpload}
-                        className="hidden"
-                        accept="image/*,video/*,application/pdf"
-                      />
-                    </label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      accept="image/*,video/*,application/pdf"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 h-8 w-8"
+                    >
+                      <Upload className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
 
-                <button
+                <Button
                   type="submit"
                   disabled={!message.trim() && files.length === 0}
-                  className="ml-2 flex-shrink-0 p-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed self-end"
+                  className="ml-2 flex-shrink-0 p-2 bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed self-end h-10 w-10"
+                  size="icon"
                 >
-                  <Send className="w-5 h-5" />
-                </button>
-              </div>
+                  <Send className="w-4 h-4" />
+                </Button>
+              </form>
 
               <p className="text-xs text-center text-gray-500 mt-2">
-                Simpify is not a Human, and response are AI generated.
+                Simpify is an AI assistant that helps improve your
+                conversations.
               </p>
-            </form>
+            </div>
           </div>
         </main>
       </div>
     </div>
+  );
+};
+
+// Extracted Sidebar Content Component
+interface SidebarContentProps {
+  chatSessions: ChatSession[];
+  currentChatId: string;
+  setCurrentChatId: (id: string) => void;
+  createNewChat: () => void;
+  toggleTheme: () => void;
+  theme: "light" | "dark";
+  sidebarOpen?: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  isMobile: boolean;
+}
+
+const SidebarContent: React.FC<SidebarContentProps> = ({
+  chatSessions,
+  currentChatId,
+  setCurrentChatId,
+  createNewChat,
+  toggleTheme,
+  theme,
+  sidebarOpen = true,
+  setSidebarOpen,
+  isMobile,
+}) => {
+  return (
+    <>
+      {/* Header with logo for mobile */}
+      {isMobile && (
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            Simpify
+          </h2>
+        </div>
+      )}
+
+      {/* New Chat Button */}
+      <div className="p-3">
+        <Button
+          onClick={createNewChat}
+          variant="outline"
+          className="w-full justify-start gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          {sidebarOpen && <span>New conversation</span>}
+        </Button>
+      </div>
+
+      {/* Chat History */}
+      <div className="flex-1 overflow-y-auto py-2 px-3">
+        <div className="space-y-1">
+          {chatSessions.map((chat) => (
+            <Button
+              key={chat.id}
+              variant={currentChatId === chat.id ? "secondary" : "ghost"}
+              className="w-full justify-start gap-2"
+              onClick={() => {
+                setCurrentChatId(chat.id);
+                if (isMobile) setSidebarOpen(false);
+              }}
+            >
+              <MessageSquare className="w-4 h-4 flex-shrink-0" />
+              {sidebarOpen && <span className="truncate">{chat.title}</span>}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* User Section */}
+      <div className="p-3 border-t border-gray-200 dark:border-gray-700">
+        {sidebarOpen && (
+          <div className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-700 space-y-1">
+            <Button variant="ghost" className="w-full justify-start gap-2">
+              <Settings className="w-4 h-4" />
+              <span>Settings</span>
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-2"
+              onClick={toggleTheme}
+            >
+              {theme === "light" ? (
+                <Moon className="w-4 h-4" />
+              ) : (
+                <Sun className="w-4 h-4" />
+              )}
+              <span>{theme === "light" ? "Dark mode" : "Light mode"}</span>
+            </Button>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2">
+          <Avatar className="w-8 h-8 bg-purple-100 dark:bg-purple-900">
+            <AvatarFallback>
+              <User className="w-4 h-4 text-purple-600 dark:text-purple-300" />
+            </AvatarFallback>
+          </Avatar>
+          {sidebarOpen && (
+            <div className="flex-1">
+              <p className="text-sm font-medium">User Account</p>
+              <Button
+                variant="link"
+                className="h-auto p-0 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1"
+              >
+                <LogOut className="w-3 h-3" />
+                Sign out
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 
