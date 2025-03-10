@@ -53,9 +53,22 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    subscriptionExpiryDate: {
-      type: Date,
+    subscription: {
+      planType: String,
+      status: String,
+      startDate: Date,
+      endDate: Date,
+      gumroadSubscriptionId: String,
+      gumroadProductId: String,
     },
+    purchaseHistory: [
+      {
+        date: Date,
+        amount: Number,
+        planType: String,
+        gumroadSaleId: String,
+      },
+    ],
     workosId: {
       type: String,
       unique: true,

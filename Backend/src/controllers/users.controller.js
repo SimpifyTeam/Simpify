@@ -39,9 +39,10 @@ const authCallback = async (req, res) => {
     const { code, gender, age, location, goal } = req.query;
     console.log("Received request with code:", req.query.code);
 
-
     if (!code) {
-      return res.status(400).json({ error: "Authorization code is missing, Code is required" });
+      return res
+        .status(400)
+        .json({ error: "Authorization code is missing, Code is required" });
     }
 
     // Exchange authorization code for a WorkOS profile
@@ -80,6 +81,8 @@ const authCallback = async (req, res) => {
       await existingUser.save();
     }
 
+    req.session.user = existingUser;
+
     res.status(200).json({
       message: "User authenticated successfully",
       user: existingUser,
@@ -87,9 +90,9 @@ const authCallback = async (req, res) => {
   } catch (error) {
     //console.error("Error in /users/callback:", error);
     res.status(500).json({
-       error: error.message,
-       errorMessage: error 
-      });
+      error: error.message,
+      errorMessage: error,
+    });
   }
 };
 
